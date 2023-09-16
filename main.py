@@ -13,54 +13,68 @@ def saudacao():
         return "Boa noite!"
 
 def main():
-    print(saudacao)
+    print(saudacao())
 
     cpf = ""
 
-    print("Deseja marcar uma consulta? (sim/não): ")
-    resposta = input().lower()
+    while True:
+        print("Deseja marcar uma consulta? (sim/não): ")
+        resposta = input().lower()
 
-    if resposta == "sim":
-        print("Ótimo! Você já realizou algum exame em nossa unidade?")
-        realizou_exame = input().lower()
-
-        if realizou_exame == "sim":
+        if resposta == "sim":
             while True:
-                cpf = input("Por favor, informe seu CPF: ")
-                if cpf.lower() == "fake":
-                    print(f"CPF {cpf} foi recebido.")
+                print("Ótimo! Você já realizou algum exame em nossa unidade? (sim/não): ")
+                realizou_exame = input().lower()
+
+                if realizou_exame == "sim":
                     break
-                elif validar_cpf(cpf):
-                    print(f"Seu CPF {cpf} foi recebido.")
-                    paciente = obter_dados_paciente(cpf)
-                    if paciente:
-                        print(f"\nSr. {paciente['Nome']} seu CPF está cadastrado. Prossiga com a marcação da consulta.")
-                        print("\nDados do paciente:")
-                        print(f"CPF: {paciente['CPF']}")
-                        print(f"Data de Nascimento: {paciente['Data de Nascimento']}")
-                        print(f"Telefone/Celular: {paciente['Telefone/Celular']}")
-                        print(f"Sexo: {paciente['Sexo']}")
-                        marcar_consulta(paciente, agenda)
-                        break
-                    else:
-                        print("CPF não encontrado. Por favor, verifique o número do CPF.")
+                elif realizou_exame == "não":
+                    break
                 else:
-                    print("CPF inválido. Por favor, verifique o número do CPF.")
-        else:
-            print("Informe sua data de nascimento:")
-            dia = int(input("Dia: "))
-            mes = int(input("Mês: "))
-            ano = int(input("Ano: "))
-            data_nascimento = datetime.date(ano, mes, dia)
-            idade = calcular_idade(data_nascimento)
+                    print("Por favor, responda apenas com 'sim' ou 'não'.")
 
-            if idade < 18:
-                print("Desculpe, apenas maiores de 18 anos podem marcar consultas.")
+            if realizou_exame == "sim":
+                while True:
+                    cpf = input("Por favor, informe seu CPF: ")
+                    if cpf.lower() == "fake":
+                        print(f"CPF {cpf} foi recebido.")
+                        break
+                    elif validar_cpf(cpf):
+                        print(f"Seu CPF {cpf} foi recebido.")
+                        paciente = obter_dados_paciente(cpf)
+                        if paciente:
+                            print(f"\nSr. {paciente['Nome']} seu CPF está cadastrado. Prossiga com a marcação da consulta.")
+                            print("\nDados do paciente:")
+                            print(f"CPF: {paciente['CPF']}")
+                            print(f"Data de Nascimento: {paciente['Data de Nascimento']}")
+                            print(f"Telefone/Celular: {paciente['Telefone/Celular']}")
+                            print(f"Sexo: {paciente['Sexo']}")
+                            marcar_consulta(paciente, agenda)
+                            
+                            break
+                        else:
+                            print("CPF não encontrado. Por favor, verifique o número do CPF.")
+                    else:
+                        print("CPF inválido. Por favor, verifique o número do CPF.")
             else:
+                print("Informe sua data de nascimento:")
+                while True:
+                    try:
+                        dia = int(input("Dia: "))
+                        mes = int(input("Mês: "))
+                        ano = int(input("Ano: "))
+                        data_nascimento = datetime.date(ano, mes, dia)
+                        idade = calcular_idade(data_nascimento)
+                        if idade >= 18:
+                            break
+                        else:
+                            print("Desculpe, apenas maiores de 18 anos podem marcar consultas.")
+                    except ValueError:
+                        print("Data de nascimento inválida. Por favor, digite uma data válida (DD/MM/AAAA).")
+
                 nome = input("Informe seu nome: ")
-
                 telefone = input("Informe seu telefone ou celular: ")
-
+                
                 while True:
                     try:
                         sexo_opcao = int(input("Informe seu sexo (1 para Masculino, 2 para Feminino): "))
@@ -74,6 +88,7 @@ def main():
                             print("Opção inválida. Por favor, escolha 1 para Masculino, 2 para Feminino.")
                     except ValueError:
                         print("Entrada inválida. Por favor, digite um número válido.")
+
                 paciente = {
                     "CPF": cpf,
                     "Data de Nascimento": data_nascimento,
@@ -104,6 +119,7 @@ def main():
                             print("Opção inválida. Por favor, escolha um número válido.")
                     except ValueError:
                         print("Entrada inválida. Por favor, digite um número válido.")
+                
                 print("\nEscolha um dia disponível para a consulta:")
                 dias = list(agenda[especialidade_escolhida].keys())
                 for i, dia in enumerate(dias, start=1):
@@ -140,7 +156,7 @@ def main():
 
                 print("\nEscolha um horário disponível para a consulta:")
                 for i, horario in enumerate(horarios_disponiveis, start=1):
-                                print(f"{i}. {horario}")
+                    print(f"{i}. {horario}")
 
                 while True:
                     try:
@@ -157,9 +173,14 @@ def main():
                 print(f"Dia: {dia_escolhido}")
                 print(f"Período: {periodo_escolhido}")
                 print(f"Horário: {horario_escolhido}")
+
                 print("Tenha um ótimo dia, esperamos você.")
-    else:
-        print("Tudo certo, volte sempre. Até mais!")
+                break
+        elif resposta == "não":
+            print("Tudo certo, volte sempre. Até mais!")
+            break
+        else:
+            print("Resposta inválida. Por favor, responda apenas com 'sim' ou 'não'.")
 
 if __name__ == "__main__":
     main()

@@ -42,3 +42,4 @@ def cadastrar_paciente():
             break
         else:
             print("CPF inválido. Por favor, verifique o número do CPF.")
+
